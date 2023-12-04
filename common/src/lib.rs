@@ -6,7 +6,7 @@ pub fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
     where P: AsRef<Path>, {
 
     let md_path = Path::new(env!("CARGO_MANIFEST_DIR"));
-    let filepath = md_path.join("data").join(filename);
+    let filepath = md_path.join("..").join("data").join(filename);
 
     let file = File::open(filepath)?;
     Ok(io::BufReader::new(file).lines())

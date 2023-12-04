@@ -1,6 +1,5 @@
 use std::collections::HashMap;
 use std::ops::Mul;
-use crate::aoc::common;
 
 pub fn part1(filename: &str) -> Option<i32> {
     let mut sum = 0;
@@ -77,4 +76,9 @@ mod tests {
     fn test_part2() {
         assert_eq!(part2("test_day01_part2.txt").unwrap(), 281);
     }
+}
+
+fn main() {
+    println!("Day01 Part1 = {}", part1("day01.txt").unwrap());
+    println!("Day01 Part2 = {}", part2("day01.txt").unwrap());
 }
