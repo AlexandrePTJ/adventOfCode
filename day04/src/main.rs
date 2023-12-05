@@ -1,25 +1,11 @@
-fn get_numbers(line: &str, start_idx: usize, end_idx: usize) -> Vec<i32> {
-    let mut result = vec![];
-
-    if let Some(sl) = line.get(start_idx..end_idx) {
-        for num_str in sl.split(' ') {
-            if let Ok(number) = num_str.trim().parse() {
-                result.push(number);
-            }
-        }
-    }
-
-    return result;
-}
-
 pub fn get_winning_count(line: &str) -> usize {
     let mut count = 0;
 
     let colon_idx = line.find(':').unwrap();
     let sep_idx = line.find('|').unwrap();
 
-    let card_numbers = get_numbers(line, colon_idx, sep_idx);
-    let our_numbers = get_numbers(line, sep_idx, line.len());
+    let card_numbers = common::get_numbers::<i32>(line, Some(colon_idx), Some(sep_idx));
+    let our_numbers = common::get_numbers::<i32>(line, Some(sep_idx), None);
 
     for n in our_numbers {
         if card_numbers.contains(&n) {
@@ -53,7 +39,6 @@ pub fn part2(filename: &str) -> usize {
     if let Ok(lines) = common::read_lines(filename) {
         for line in lines {
             if let Ok(card) = line {
-
                 while deck.len() < card_idx {
                     deck.push(1);
                 }
