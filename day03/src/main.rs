@@ -142,6 +142,7 @@ pub fn part1(filename: &str) -> (Vec<i32>, i32) {
     }
 
     let sum = result.iter().sum();
+    result.sort();
     (result, sum)
 }
 
@@ -180,6 +181,7 @@ pub fn part2(filename: &str) -> (Vec<i32>, i32) {
 
 
     let sum = result.iter().sum();
+    result.sort();
     (result, sum)
 }
 
@@ -192,7 +194,7 @@ mod tests {
     fn test_part1() {
         let (result, sum) = part1("test_day03.txt");
 
-        assert_eq!(result, vec![467, 35, 633, 617, 592, 755, 664, 598]);
+        assert_eq!(result, vec![35, 467, 592, 598, 617, 633, 664, 755]);
         assert_eq!(sum, 4361);
     }
 
