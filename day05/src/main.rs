@@ -22,77 +22,69 @@ impl ConvertRange {
     }
 }
 
-fn transform(statuses: Vec<usize>, ranges: &Vec<ConvertRange>) -> Vec<usize> {
-    let mut new_statuses = vec![];
-    for status in statuses {
-        let mut new_status = status;
+fn transform(seed: usize, garden: &Vec<Vec<ConvertRange>>) -> usize {
+    let mut status = seed;
+
+    for ranges in garden {
         for range in ranges {
             if range.can_convert(status) {
-                new_status = range.convert(status);
+                status = range.convert(status);
+                break;
             }
         }
-        new_statuses.push(new_status);
     }
-    return new_statuses;
+
+    return status;
 }
 
-pub fn part1(filename: &str) -> usize {
+fn parse_puzzle(filename: &str) -> (Vec<usize>, Vec<Vec<ConvertRange>>) {
     let mut seeds = vec![];
-    let mut ranges: Vec<ConvertRange> = vec![];
+    let mut garden: Vec<Vec<ConvertRange>> = vec![];
+    let mut last_idx = 0;
 
     if let Ok(lines) = common::read_lines(filename) {
         for line in lines {
             if let Ok(line_str) = line {
                 if line_str.starts_with("seeds") {
                     seeds = common::get_numbers::<usize>(line_str.as_str(), Some(6), None);
-                } else if line_str.trim().is_empty() {
-                    if !ranges.is_empty() {
-                        seeds = transform(seeds, ranges.as_ref());
-                        ranges.clear();
-                    }
-                } else if !line_str.ends_with("map:") {
-                    ranges.push(ConvertRange::from(common::get_numbers(line_str.as_str(), None, None)));
+                } else if line_str.ends_with("map:") {
+                    garden.push(vec![]);
+                    last_idx += 1;
+                } else if !line_str.ends_with("map:") && !line_str.trim().is_empty() && !garden.is_empty() {
+                    garden[last_idx - 1].push(ConvertRange::from(common::get_numbers(line_str.as_str(), None, None)));
                 }
             }
         }
     }
-
-    if !ranges.is_empty() {
-        seeds = transform(seeds, ranges.as_ref());
-        ranges.clear();
-    }
-
-    return *seeds.iter().min().unwrap();
+    return (seeds, garden);
 }
 
-pub fn part2(_filename: &str) -> usize {
-    return 0;
-    // let mut seeds = vec![];
-    // let mut ranges: Vec<ConvertRange> = vec![];
-    //
-    // if let Ok(lines) = common::read_lines(filename) {
-    //     for line in lines {
-    //         if let Ok(line_str) = line {
-    //             if line_str.starts_with("seeds") {
-    //                 let seeds_ranges = common::get_numbers::<usize>(line_str.as_str(), Some(6), None);
-    //             } else if line_str.trim().is_empty() {
-    //                 if !ranges.is_empty() {
-    //                     seeds = transform(seeds, ranges.as_ref());
-    //                     ranges.clear();
-    //                 }
-    //             } else if !line_str.ends_with("map:") {
-    //                 ranges.push(ConvertRange::from(common::get_numbers(line_str.as_str(), None, None)));
-    //             }
-    //         }
-    //     }
-    // }
-    //
-    // if !ranges.is_empty() {
-    //     seeds = transform(seeds, ranges.as_ref());
-    //     ranges.clear();
-    // }
-    //
-    // return *seeds.iter().min().unwrap();
+pub fn part1(filename: &str) -> usize {
+    let (seeds, garden) = parse_puzzle(filename);
+    let mut smallest = usize::MAX;
+
+    for seed in seeds {
+        smallest = std::cmp::min(transform(seed, &garden), smallest);
+    }
+
+    return smallest;
+}
+
+pub fn part2(filename: &str) -> usize {
+    let (seeds, garden) = parse_puzzle(filename);
+    let mut smallest = usize::MAX;
+    let count = seeds.len() / 2;
+
+    for n in 0..count {
+        let start_seed = seeds[n * 2];
+        let end_seed = start_seed + seeds[n * 2 + 1];
+
+        for seed in start_seed..end_seed + 1 {
+            smallest = std::cmp::min(transform(seed, &garden), smallest);
+        }
+    }
+
+    return smallest;
 }
 
 
@@ -103,11 +95,11 @@ mod tests {
     #[test]
     fn test_part1() { assert_eq!(part1("test_day05.txt"), 35); }
 
-    // #[test]
-    // fn test_part2() { assert_eq!(part2("test_day05.txt"), 46); }
+    #[test]
+    fn test_part2() { assert_eq!(part2("test_day05.txt"), 46); }
 }
 
 fn main() {
     println!("Day05 Part1 = {}", part1("day05.txt"));
-    // println!("Day05 Part2 = {}", part2("day05.txt"));
+    println!("Day05 Part2 = {}", part2("day05.txt"));
 }
