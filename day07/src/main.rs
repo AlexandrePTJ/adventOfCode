@@ -182,8 +182,8 @@ pub fn part2(filename: &str) -> usize {
 mod tests {
     use super::*;
 
-    // #[test]
-    // fn test_part1() { assert_eq!(part1("test_day07.txt"), 6440); }
+    #[test]
+    fn test_part1() { assert_eq!(part1("test_day07.txt"), 6440); }
 
     #[test]
     fn test_part2() { assert_eq!(part2("test_day07.txt"), 5905); }
@@ -191,5 +191,5 @@ mod tests {
 
 fn main() {
     println!("Day07 Part1 = {}", part1("day07.txt"));
-    println!("Day07 Part2 = {}", part2("day07.txt")); // <249027203
+    println!("Day07 Part2 = {}", part2("day07.txt")); // <should be inf 249027203
 }
